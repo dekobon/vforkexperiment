@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class VForkMe {
     private static final File LOCK_FILE = new File("/var/tmp/vforkme.pid");
-    private static final int MAX_PROCESSES = 4;
+    private static int maxProcesses = 4;
 
     private static boolean isParentProcess = false;
 
@@ -20,6 +20,12 @@ public class VForkMe {
             secondsToRun = 60;
         } else {
             secondsToRun = Integer.parseInt(argv[0]);
+        }
+
+        if (argv.length < 2) {
+            maxProcesses = 2;
+        } else {
+            maxProcesses = Integer.parseInt(argv[1]);
         }
 
         if (!LOCK_FILE.exists()) {
@@ -40,7 +46,7 @@ public class VForkMe {
             final int totalProcesses = countPidsFromLockFile();
             System.out.printf("%d processes running\n", totalProcesses);
 
-            if (totalProcesses >= MAX_PROCESSES) {
+            if (totalProcesses >= maxProcesses) {
                 return;
             }
         }
